@@ -1,26 +1,25 @@
-import React, { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import React, { useRef, useState } from "react";
+import SpeechToAction from "./components/SpeechToAction";
 
 const Invoice = React.forwardRef((props, ref) => {
   const { data } = props;
 
   return (
     <div ref={ref}>
-      <div class="row mb-4">
-        <div class="col-md-6">
-          <p class="mb-1">
+      <div className="row mb-4">
+        <div className="col-md-6">
+          <p className="mb-1">
             <strong>Date:</strong> {data.date}
           </p>
-          <p class="mb-1">
+          <p className="mb-1">
             <strong>Bill To:</strong> {data.customerName}
           </p>
         </div>
       </div>
-      <h4 class="mb-3">Items</h4>
-      <div class="table-responsive">
-        <table class="table table-striped table-hover">
-          <thead class="table-dark">
+      <h4 className="mb-3">Items</h4>
+      <div className="table-responsive">
+        <table className="table table-striped table-hover">
+          <thead className="table-dark">
             <tr>
               <th scope="col">Item</th>
               <th scope="col">Quantity</th>
@@ -40,15 +39,15 @@ const Invoice = React.forwardRef((props, ref) => {
           </tbody>
         </table>
       </div>
-      <div class="d-flex justify-content-end">
-        <h3 class="text-success">Total: ${data.total}</h3>
+      <div className="d-flex justify-content-end">
+        <h3 className="text-success">Total: ${data.total}</h3>
       </div>
     </div>
   );
 });
 
 const GenerateInvoice = () => {
-  const invoiceData = {
+  const [invoiceData, setInvoiceData] = useState({
     invoiceNumber: "INV12345",
     date: "2025-05-07",
     customerName: "John Doe",
@@ -57,30 +56,26 @@ const GenerateInvoice = () => {
       { name: "Product 2", quantity: 1, price: 100 },
     ],
     total: 200,
-  };
+  });
 
   const invoiceRef = useRef();
 
-  const handlePrint = useReactToPrint({
-    content: () => invoiceRef.current,
-    documentTitle: `Invoice_${invoiceData.invoiceNumber}`,
-  });
-
   return (
-    <div class="container my-5">
-      <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-          <h2 class="mb-0">Invoice #{invoiceData.invoiceNumber}</h2>
+    <div className="container my-5">
+      <div className="card shadow-sm">
+        <div className="card-header bg-primary text-white">
+          <h2 className="mb-0">Invoice #{invoiceData.invoiceNumber}</h2>
         </div>
-        <div class="card-body">
+        <div className="card-body">
           <Invoice ref={invoiceRef} data={invoiceData} />
-          <div class="d-flex justify-content-start mt-4">
-            <button className="btn btn-outline-primary" onClick={handlePrint}>
-              Print Invoice
-            </button>
-          </div>
+          <div className="d-flex gap-3 justify-content-start mt-4"></div>
         </div>
       </div>
+
+      <SpeechToAction
+        invoiceData={invoiceData}
+        setInvoiceData={setInvoiceData}
+      />
     </div>
   );
 };
