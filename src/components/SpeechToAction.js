@@ -12,13 +12,12 @@ const SpeechToAction = ({ invoiceData, setInvoiceData }) => {
   const handleCommand = (command) => {
     const lowerCommand = command.toLowerCase();
 
-    // Match both parts separately using regex or simple split
-    const nameRegex = /change name to ([a-z ]+?)(?: and|$)/;
-    const productRegex =
-      /add product(?: called| named)? ([a-z0-9 ]+?)(?: and|$)/;
-
-    const nameMatch = lowerCommand.match(nameRegex);
-    const productMatch = lowerCommand.match(productRegex);
+    const nameMatch = lowerCommand.match(/change name to ([a-z ]+?)(?: and|$)/);
+    const productRegex = /add product ([a-z0-9 ]+?)(?: and|$)/;
+    
+    const productMatch = lowerCommand.match(
+      /add product (.+?) with quantity (\d+) and price (\d+)/
+    ) || lowerCommand.match(productRegex);
 
     if (nameMatch && nameMatch[1]) {
       const customerName = nameMatch[1].trim();
@@ -26,12 +25,15 @@ const SpeechToAction = ({ invoiceData, setInvoiceData }) => {
       speak(`Customer name changed to ${customerName}`);
     }
 
-    if (productMatch && productMatch[1]) {
+    if (productMatch) {
       const productName = productMatch[1].trim();
+      const quantity = parseInt(productMatch[2], 10) || 1;
+      const price = parseFloat(productMatch[3]) || 100 ;
+
       const newItem = {
         name: productName,
-        quantity: 1,
-        price: 10,
+        quantity,
+        price,
       };
 
       const updatedItems = [...invoiceData.items, newItem];
@@ -45,7 +47,10 @@ const SpeechToAction = ({ invoiceData, setInvoiceData }) => {
         items: updatedItems,
         total: newTotal,
       }));
-      speak(`Product ${productName} added`);
+
+      speak(
+        `Product ${productName} added with quantity ${quantity} and price ${price}`
+      );
     }
 
     if (!nameMatch && !productMatch) {
@@ -84,6 +89,17 @@ const SpeechToAction = ({ invoiceData, setInvoiceData }) => {
 
   return (
     <div className="my-4">
+      example:-
+      <ul>
+        <li>
+          change name to <strong>Vijay Choudhary.</strong>
+        </li>
+        <li>add product <strong>Pen</strong>.</li>
+        <li>
+            add product <strong>Pen</strong> with quantity <strong>3</strong> and price <strong>50</strong>.
+        </li>
+        <li>Change name to <b>Jane</b> and add product <b>Pen</b> with quantity <b>3</b> and price <b>25</b>.</li>
+      </ul>
       <h4>{status}</h4>
       <button className="btn btn-warning" onClick={startListening}>
         Start Listening
