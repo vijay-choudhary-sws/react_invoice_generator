@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import SpeechToAction from "./components/SpeechToAction";
+import React, { useRef, useState } from 'react';
+import AskingAiComponent from './components/AskingAiComponent';
 
 const Invoice = React.forwardRef((props, ref) => {
   const { data } = props;
@@ -32,8 +32,8 @@ const Invoice = React.forwardRef((props, ref) => {
               <tr key={index}>
                 <td>{item.name}</td>
                 <td>{item.quantity}</td>
-                <td>${item.price}</td>
-                <td>${item.quantity * item.price}</td>
+                <td>₹{item.price}</td>
+                <td>₹{item.quantity * item.price}</td>
               </tr>
             ))}
           </tbody>
@@ -46,14 +46,14 @@ const Invoice = React.forwardRef((props, ref) => {
   );
 });
 
-const GenerateInvoice = () => {
+const AskingAiBot = () => {
   const [invoiceData, setInvoiceData] = useState({
-    invoiceNumber: "INV12345",
-    date: "2025-05-07",
-    customerName: "John Doe",
+    invoiceNumber: 'INV12345',
+    date: '2025-05-07',
+    customerName: 'John Doe',
     items: [
-      { name: "Product 1", quantity: 2, price: 50 },
-      { name: "Product 2", quantity: 1, price: 100 },
+      { name: 'Product 1', quantity: 2, price: 50 },
+      { name: 'Product 2', quantity: 1, price: 100 },
     ],
     total: 200,
   });
@@ -61,7 +61,7 @@ const GenerateInvoice = () => {
   const invoiceRef = useRef();
 
   return (
-    <div className="container my-5">
+    <div className="my-5">
       <div className="card shadow-sm">
         <div className="card-header bg-primary text-white">
           <h2 className="mb-0">Invoice #{invoiceData.invoiceNumber}</h2>
@@ -72,12 +72,9 @@ const GenerateInvoice = () => {
         </div>
       </div>
 
-      <SpeechToAction
-        invoiceData={invoiceData}
-        setInvoiceData={setInvoiceData}
-      />
+      <AskingAiComponent invoiceData={invoiceData} setInvoiceData={setInvoiceData} />
     </div>
   );
 };
 
-export default GenerateInvoice;
+export default AskingAiBot;
